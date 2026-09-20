@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -15,7 +17,9 @@ export function createApp() {
   const app = express();
 
   app.set("trust proxy", 1);
-  app.use(helmet());
+  // CSP is disabled so the bundled single-page app loads cleanly; all other
+  // Helmet protections (HSTS, no-sniff, frameguard, …) stay on.
+  app.use(helmet({ contentSecurityPolicy: false }));
   app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
@@ -30,6 +34,17 @@ export function createApp() {
   app.use("/api/appointments", appointmentsRouter);
   app.use("/api/records", recordsRouter);
   app.use("/api/prescriptions", prescriptionsRouter);
+
+  // In production, serve the built React client from the same origin — so the
+  // httpOnly refresh cookie just works without any cross-site cookie config.
+  const clientDir = path.resolve(process.cwd(), env.PUBLIC_DIR);
+  if (env.NODE_ENV === "production" && existsSync(clientDir)) {
+    app.use(express.static(clientDir));
+    app.get("*", (req, res, next) => {
+      if (req.path.startsWith("/api/")) return next();
+      res.sendFile(path.join(clientDir, "index.html"));
+    });
+  }
 
   app.use(notFoundHandler);
   app.use(errorHandler);

@@ -11,6 +11,8 @@ const schema = z.object({
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().default(7),
   CLIENT_ORIGIN: z.string().default("http://localhost:5173"),
   STORAGE_DIR: z.string().default("storage"),
+  // In production the server serves the built client from this directory.
+  PUBLIC_DIR: z.string().default("public"),
 });
 
 export const env = schema.parse(process.env);

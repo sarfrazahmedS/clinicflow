@@ -30,3 +30,6 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local prod-test copy of the built client (Docker builds it fresh)
+/server/public/

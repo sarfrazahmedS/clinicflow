@@ -13,8 +13,10 @@
     "test:watch": "vitest",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "start:prod": "prisma migrate deploy && node dist/scripts/seed.js && node dist/index.js",
     "setup:browser": "puppeteer browsers install chrome",
     "postinstall": "prisma generate"
   },
