@@ -39,6 +39,25 @@ export interface Appointment {
   doctor?: { id: string; name: string };
 }
 
+export interface Vitals {
+  bp?: string;
+  hr?: number;
+  tempC?: number;
+  weightKg?: number;
+  heightCm?: number;
+}
+
+export interface MedicalRecord {
+  id: string;
+  visitDate: string;
+  chiefComplaint?: string | null;
+  diagnosis?: string | null;
+  vitals?: Vitals | null;
+  notes?: string | null;
+  patient?: { id: string; firstName: string; lastName: string; mrn: string };
+  doctor?: { id: string; name: string };
+}
+
 export interface PrescriptionItem {
   id: string;
   drugName: string;

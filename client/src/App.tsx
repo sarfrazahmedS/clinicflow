@@ -5,6 +5,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PatientsPage } from "./pages/PatientsPage";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
+import { RecordsPage } from "./pages/RecordsPage";
 import { PrescriptionsPage } from "./pages/PrescriptionsPage";
 
 export function App() {
@@ -28,6 +29,7 @@ export function App() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/patients" element={<PatientsPage />} />
         <Route path="/appointments" element={<AppointmentsPage />} />
+        <Route path="/records" element={<RecordsPage />} />
         <Route path="/prescriptions" element={<PrescriptionsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

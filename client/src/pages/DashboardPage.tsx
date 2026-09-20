@@ -1,31 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { PageHeader, StatusBadge } from "../components/ui";
-import type { Appointment, Paginated, Patient } from "../api/types";
+import { PageHeader, RoleBadge, StatusBadge } from "../components/ui";
+import type { Appointment, MedicalRecord, Paginated, Patient, Prescription } from "../api/types";
 
 export function DashboardPage() {
   const { user } = useAuth();
+
   const patients = useQuery({
     queryKey: ["patients", "count"],
     queryFn: () => api<Paginated<Patient>>("/patients?pageSize=1"),
   });
-  const appts = useQuery({
+  const appointments = useQuery({
     queryKey: ["appointments", "recent"],
     queryFn: () => api<Paginated<Appointment>>("/appointments?pageSize=6"),
+  });
+  const records = useQuery({
+    queryKey: ["records", "count"],
+    queryFn: () => api<Paginated<MedicalRecord>>("/records?pageSize=1"),
+  });
+  const prescriptions = useQuery({
+    queryKey: ["prescriptions", "count"],
+    queryFn: () => api<Paginated<Prescription>>("/prescriptions?pageSize=1"),
   });
 
   const stats = [
     { label: "Patients", value: patients.data?.total },
-    { label: "Appointments", value: appts.data?.total },
-    { label: "Your role", value: user?.role.replace(/_/g, " ").toLowerCase() },
+    { label: "Appointments", value: appointments.data?.total },
+    { label: "Records", value: records.data?.total },
+    { label: "Prescriptions", value: prescriptions.data?.total },
   ];
 
   return (
     <div>
-      <PageHeader title={`Welcome, ${user?.name ?? ""}`} subtitle="Here's what's happening in your clinic." />
+      <PageHeader
+        title={`Welcome, ${user?.name ?? ""}`}
+        subtitle="Here's what's happening in your clinic."
+        action={user ? <RoleBadge role={user.role} /> : undefined}
+      />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="rounded-2xl bg-white p-5 shadow-sm">
             <div className="text-sm text-slate-500">{s.label}</div>
@@ -46,7 +60,7 @@ export function DashboardPage() {
             </tr>
           </thead>
           <tbody>
-            {appts.data?.items.map((a) => (
+            {appointments.data?.items.map((a) => (
               <tr key={a.id} className="border-t border-slate-100">
                 <td className="px-4 py-3 text-slate-800">
                   {a.patient ? `${a.patient.firstName} ${a.patient.lastName}` : "—"}
@@ -58,7 +72,7 @@ export function DashboardPage() {
                 </td>
               </tr>
             ))}
-            {appts.data && appts.data.items.length === 0 && (
+            {appointments.data && appointments.data.items.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-4 py-6 text-center text-slate-400">
                   No appointments yet

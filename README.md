@@ -18,6 +18,22 @@ security-critical paths.
 
 ---
 
+## Screenshots
+
+| Dashboard | Patients |
+|:---:|:---:|
+| ![Dashboard](docs/screenshots/02-dashboard.png) | ![Patients](docs/screenshots/03-patients.png) |
+| **Appointments** | **Medical records** |
+| ![Appointments](docs/screenshots/04-appointments.png) | ![Records](docs/screenshots/05-records.png) |
+| **Prescriptions** | **Login (role-based demo)** |
+| ![Prescriptions](docs/screenshots/06-prescriptions.png) | ![Login](docs/screenshots/01-login.png) |
+
+Server-generated, per-clinic **branded prescription PDF** (Puppeteer HTML → PDF):
+
+<img src="docs/screenshots/prescription-pdf.png" alt="Branded prescription PDF" width="480" />
+
+---
+
 ## Highlights
 
 - **True multi-tenancy** — every clinical row is scoped to a `clinicId` that is derived from
@@ -135,7 +151,7 @@ npm run dev                   # http://localhost:5173
 
 ### Demo credentials
 
-Populated by the seed script — see [`docs/DEMO.md`](docs/DEMO.md) once Phase 4 lands.
+Populated by the seed script — see [`docs/DEMO.md`](docs/DEMO.md). Every demo account uses the password `Passw0rd!`.
 
 ## Testing
 
@@ -171,14 +187,14 @@ least-privilege RBAC, and errors that never leak internals.
 - [x] **P8** Multi-tenancy enforcement
 - [x] **P9** Backend modules / APIs — auth, patients, appointments, records, prescriptions, documents
 - [x] **P10** Frontend foundation (Vite + React + TS + Tailwind, auth, protected routes, API client with auto token-refresh)
-- [x] **P11** Frontend modules — dashboard, patients, appointments, prescriptions _(records view next)_
+- [x] **P11** Frontend modules — dashboard, patients, appointments, records, prescriptions
 - [x] **P12** PDF / documents (Puppeteer branded prescription PDF + PNG preview)
 - [x] **P13** Testing (Vitest + Supertest — 17 tests: auth, RBAC, tenant isolation, business rules; green in CI)
-- [ ] **P14** Security review
-- [ ] **P15** Performance review
-- [ ] **P16** UI/UX polish
-- [ ] **P17** README / GitHub prep
-- [ ] **P18** Final end-to-end QA
+- [x] **P14** Security review ([`docs/SECURITY.md`](docs/SECURITY.md) — checklist + tested scenarios)
+- [x] **P15** Performance review (DB indexes on tenant/lookup columns, server-side pagination)
+- [x] **P16** UI/UX polish (favicon, role-aware dashboard, consistent Tailwind design)
+- [x] **P17** README / GitHub prep (screenshots, ERD, API/SECURITY/DEMO docs, CI badge)
+- [x] **P18** Final end-to-end QA (17 automated tests + all-role manual walkthrough)
 
 ## License
 
