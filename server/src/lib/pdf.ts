@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import puppeteer from "puppeteer";
+import puppeteer, { type Page } from "puppeteer";
 import { env } from "../env.js";
 
 export interface PrescriptionPdfData {
@@ -29,7 +29,8 @@ function age(dob: Date | null): string {
   return `${Math.floor(diff / (365.25 * 24 * 3600 * 1000))} yrs`;
 }
 
-function template(d: PrescriptionPdfData): string {
+/** The branded prescription document as an HTML string. */
+export function buildPrescriptionHtml(d: PrescriptionPdfData): string {
   const brand = d.clinic.brandColor || "#2563eb";
   const rows = d.items
     .map(
@@ -46,8 +47,9 @@ function template(d: PrescriptionPdfData): string {
 
   return `<!doctype html><html><head><meta charset="utf-8" /><style>
     * { box-sizing: border-box; }
-    body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #0f172a; margin: 0; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #0f172a; margin: 0; background: #fff; }
     .bar { height: 8px; background: ${brand}; }
+    .wrap { padding: 0 40px 40px; }
     .head { display: flex; justify-content: space-between; align-items: flex-start; padding: 24px 0 16px; border-bottom: 1px solid #e2e8f0; }
     .clinic { font-size: 22px; font-weight: 700; color: ${brand}; }
     .muted { color: #64748b; font-size: 12px; }
@@ -67,7 +69,7 @@ function template(d: PrescriptionPdfData): string {
     .foot { margin-top: 28px; padding-top: 12px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 10.5px; text-align: center; }
   </style></head><body>
     <div class="bar"></div>
-    <div style="padding: 0 40px 40px;">
+    <div class="wrap">
       <div class="head">
         <div>
           <div class="clinic">${esc(d.clinic.name)}</div>
@@ -106,17 +108,27 @@ function template(d: PrescriptionPdfData): string {
   </body></html>`;
 }
 
-/** Render a branded prescription PDF, persist it under STORAGE_DIR, return the bytes + path. */
-export async function renderPrescriptionPdf(
-  data: PrescriptionPdfData,
-): Promise<{ bytes: Buffer; filePath: string }> {
+async function withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    // Optional override (e.g. an already-installed Chrome for Testing). When
+    // unset, Puppeteer uses the Chromium from `npm run setup:browser`.
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
   });
   try {
-    const page = await browser.newPage();
-    await page.setContent(template(data), { waitUntil: "networkidle0" });
+    return await fn(await browser.newPage());
+  } finally {
+    await browser.close();
+  }
+}
+
+/** Render a branded prescription PDF, persist it under STORAGE_DIR, return bytes + path. */
+export async function renderPrescriptionPdf(
+  data: PrescriptionPdfData,
+): Promise<{ bytes: Buffer; filePath: string }> {
+  return withPage(async (page) => {
+    await page.setContent(buildPrescriptionHtml(data), { waitUntil: "networkidle0" });
     const pdf = await page.pdf({
       format: "A4",
       printBackground: true,
@@ -127,7 +139,15 @@ export async function renderPrescriptionPdf(
     mkdirSync(path.dirname(absPath), { recursive: true });
     writeFileSync(absPath, pdf);
     return { bytes: Buffer.from(pdf), filePath: relPath };
-  } finally {
-    await browser.close();
-  }
+  });
+}
+
+/** Render a PNG preview image of the same prescription document. */
+export async function renderPrescriptionPng(data: PrescriptionPdfData): Promise<Buffer> {
+  return withPage(async (page) => {
+    await page.setViewport({ width: 820, height: 1160, deviceScaleFactor: 2 });
+    await page.setContent(buildPrescriptionHtml(data), { waitUntil: "networkidle0" });
+    const png = await page.screenshot({ fullPage: true, type: "png" });
+    return Buffer.from(png);
+  });
 }

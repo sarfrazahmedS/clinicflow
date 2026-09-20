@@ -167,10 +167,10 @@ least-privilege RBAC, and errors that never leak internals.
 - [x] **P6** Authentication (JWT access + refresh)
 - [x] **P7** RBAC
 - [x] **P8** Multi-tenancy enforcement
-- [ ] **P9** Backend modules / APIs — _auth, patients, appointments done; records, prescriptions, documents next_
+- [x] **P9** Backend modules / APIs — auth, patients, appointments, records, prescriptions, documents
 - [x] **P10** Frontend foundation (Vite + React + TS + Tailwind, auth, protected routes, API client with auto token-refresh)
-- [ ] **P11** Frontend modules — _dashboard, patients, appointments done; records, prescriptions next_
-- [ ] **P12** PDF / documents
+- [x] **P11** Frontend modules — dashboard, patients, appointments, prescriptions _(records view next)_
+- [x] **P12** PDF / documents (Puppeteer branded prescription PDF + PNG preview)
 - [ ] **P13** Testing
 - [ ] **P14** Security review
 - [ ] **P15** Performance review

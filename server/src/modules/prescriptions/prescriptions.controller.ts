@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { asyncHandler } from "../../lib/errors.js";
 import { audit } from "../../lib/audit.js";
 import { prisma } from "../../lib/prisma.js";
-import { renderPrescriptionPdf } from "../../lib/pdf.js";
+import { renderPrescriptionPdf, renderPrescriptionPng, type PrescriptionPdfData } from "../../lib/pdf.js";
 import * as service from "./prescriptions.service.js";
 import type { ListPrescriptionsQuery } from "./prescriptions.schemas.js";
 
@@ -35,7 +35,7 @@ export const getOne = asyncHandler(async (req: Request, res: Response) => {
 export const pdf = asyncHandler(async (req: Request, res: Response) => {
   const p = await service.getPrescriptionForPdf(req.user!, req.params.id!);
 
-  const { bytes, filePath } = await renderPrescriptionPdf({
+  const data: PrescriptionPdfData = {
     clinic: { name: p.clinic.name, brandColor: p.clinic.brandColor, address: p.clinic.address, phone: p.clinic.phone },
     doctor: { name: p.doctor.name, specialty: p.doctor.specialty, licenseNo: p.doctor.licenseNo },
     patient: { firstName: p.patient.firstName, lastName: p.patient.lastName, mrn: p.patient.mrn, gender: p.patient.gender, dob: p.patient.dob },
@@ -47,7 +47,17 @@ export const pdf = asyncHandler(async (req: Request, res: Response) => {
       durationDays: it.durationDays,
       instructions: it.instructions,
     })),
-  });
+  };
+
+  // A PNG preview (used by the UI thumbnail) skips persistence.
+  if (req.query.format === "png") {
+    const png = await renderPrescriptionPng(data);
+    res.setHeader("Content-Type", "image/png");
+    res.send(png);
+    return;
+  }
+
+  const { bytes, filePath } = await renderPrescriptionPdf(data);
 
   // Record the generated document (best-effort) + audit.
   await prisma.document
