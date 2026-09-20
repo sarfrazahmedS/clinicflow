@@ -161,13 +161,13 @@ least-privilege RBAC, and errors that never leak internals.
 
 - [x] **P1** Project setup
 - [x] **P2** Database architecture (Prisma schema)
-- [ ] **P3** Migrations
-- [ ] **P4** Seed / demo data
-- [ ] **P5** Backend foundation (app, config, middleware, error handling)
-- [ ] **P6** Authentication (JWT access + refresh)
-- [ ] **P7** RBAC
-- [ ] **P8** Multi-tenancy enforcement
-- [ ] **P9** Backend modules / APIs
+- [x] **P3** Migrations
+- [x] **P4** Seed / demo data
+- [x] **P5** Backend foundation (app, config, middleware, error handling)
+- [x] **P6** Authentication (JWT access + refresh)
+- [x] **P7** RBAC
+- [x] **P8** Multi-tenancy enforcement
+- [ ] **P9** Backend modules / APIs — _auth, patients, appointments done; records, prescriptions, documents next_
 - [ ] **P10** Frontend foundation
 - [ ] **P11** Frontend modules
 - [ ] **P12** PDF / documents
