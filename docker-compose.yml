@@ -1,0 +1,21 @@
+# PostgreSQL for local development.
+services:
+  db:
+    image: postgres:16
+    container_name: clinicflow-db
+    environment:
+      POSTGRES_USER: clinicflow
+      POSTGRES_PASSWORD: clinicflow
+      POSTGRES_DB: clinicflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - clinicflow_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinicflow -d clinicflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  clinicflow_pgdata:
