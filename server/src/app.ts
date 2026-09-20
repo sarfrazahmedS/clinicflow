@@ -6,6 +6,8 @@ import { env } from "./env.js";
 import { apiLimiter } from "./middleware/rateLimit.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { patientsRouter } from "./modules/patients/patients.routes.js";
+import { appointmentsRouter } from "./modules/appointments/appointments.routes.js";
 
 export function createApp() {
   const app = express();
@@ -22,6 +24,8 @@ export function createApp() {
   });
 
   app.use("/api/auth", authRouter);
+  app.use("/api/patients", patientsRouter);
+  app.use("/api/appointments", appointmentsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
