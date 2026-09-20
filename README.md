@@ -168,8 +168,8 @@ least-privilege RBAC, and errors that never leak internals.
 - [x] **P7** RBAC
 - [x] **P8** Multi-tenancy enforcement
 - [ ] **P9** Backend modules / APIs — _auth, patients, appointments done; records, prescriptions, documents next_
-- [ ] **P10** Frontend foundation
-- [ ] **P11** Frontend modules
+- [x] **P10** Frontend foundation (Vite + React + TS + Tailwind, auth, protected routes, API client with auto token-refresh)
+- [ ] **P11** Frontend modules — _dashboard, patients, appointments done; records, prescriptions next_
 - [ ] **P12** PDF / documents
 - [ ] **P13** Testing
 - [ ] **P14** Security review
