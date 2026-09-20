@@ -1,5 +1,7 @@
 # ClinicFlow
 
+![CI](https://github.com/sarfrazahmedS/clinicflow/actions/workflows/ci.yml/badge.svg)
+
 A **multi-tenant clinic management SaaS** — a production-style demo where many independent
 clinics run on one platform, each seeing only its own data. Staff register patients, book
 appointments, record visits and prescriptions, and generate branded PDF documents; every
@@ -171,7 +173,7 @@ least-privilege RBAC, and errors that never leak internals.
 - [x] **P10** Frontend foundation (Vite + React + TS + Tailwind, auth, protected routes, API client with auto token-refresh)
 - [x] **P11** Frontend modules — dashboard, patients, appointments, prescriptions _(records view next)_
 - [x] **P12** PDF / documents (Puppeteer branded prescription PDF + PNG preview)
-- [ ] **P13** Testing
+- [x] **P13** Testing (Vitest + Supertest — 17 tests: auth, RBAC, tenant isolation, business rules; green in CI)
 - [ ] **P14** Security review
 - [ ] **P15** Performance review
 - [ ] **P16** UI/UX polish
