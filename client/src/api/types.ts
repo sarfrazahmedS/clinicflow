@@ -39,6 +39,25 @@ export interface Appointment {
   doctor?: { id: string; name: string };
 }
 
+export interface PrescriptionItem {
+  id: string;
+  drugName: string;
+  dosage?: string | null;
+  frequency?: string | null;
+  durationDays?: number | null;
+  instructions?: string | null;
+}
+
+export interface Prescription {
+  id: string;
+  issuedAt: string;
+  status: string;
+  notes?: string | null;
+  items: PrescriptionItem[];
+  patient?: { id: string; firstName: string; lastName: string; mrn: string };
+  doctor?: { id: string; name: string };
+}
+
 export interface Paginated<T> {
   items: T[];
   total: number;

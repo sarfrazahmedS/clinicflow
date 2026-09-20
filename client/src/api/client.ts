@@ -47,6 +47,19 @@ export function refreshSession(): Promise<boolean> {
   return refreshing;
 }
 
+/** Fetch a binary response (e.g. a PDF) with auth + one transparent refresh. */
+export async function fetchBlob(path: string): Promise<Blob> {
+  const build = () => {
+    const h = new Headers();
+    if (accessToken) h.set("Authorization", `Bearer ${accessToken}`);
+    return fetch(`/api${path}`, { headers: h, credentials: "include" });
+  };
+  let res = await build();
+  if (res.status === 401 && (await refreshSession())) res = await build();
+  if (!res.ok) throw new ApiError(res.status, "Request failed");
+  return res.blob();
+}
+
 export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Promise<T> {
   let res = await request(path, opts);
   if (res.status === 401 && opts.auth !== false) {
