@@ -1,5 +1,7 @@
 # ClinicFlow
 
+[![Live Demo](https://img.shields.io/badge/▶_Live_Demo-Try_it_now-2563eb?style=for-the-badge)](https://sarfrazahmeds.github.io/clinicflow/)
+
 ![CI](https://github.com/sarfrazahmedS/clinicflow/actions/workflows/ci.yml/badge.svg)
 
 A **multi-tenant clinic management SaaS** — a production-style demo where many independent
@@ -15,6 +17,28 @@ security-critical paths.
 > full-stack architecture, multi-tenancy and security patterns. It is **not** a certified
 > medical product and makes **no HIPAA/regulatory compliance claim**. Do not use it with real
 > patient data.
+
+## 🕹️ Live Demo
+
+**▶️ Try it live — [sarfrazahmeds.github.io/clinicflow](https://sarfrazahmeds.github.io/clinicflow/)**
+
+The demo runs the **real React client** against an **in-memory mock backend** — no server or
+database to set up, and **no real patient data**. Sign in as any of the five roles (all use
+password `Passw0rd!`) to explore multi-tenant data isolation, the appointment status lifecycle,
+medical records, prescriptions and PDF export:
+
+| Role | Email |
+| --- | --- |
+| Clinic Admin | `admin@sunrise.dev` |
+| Doctor | `dr.smith@sunrise.dev` |
+| Reception | `reception@sunrise.dev` |
+| Patient | `patient@sunrise.dev` |
+| Super Admin | `superadmin@clinicflow.dev` |
+
+> The demo's mock backend lives in [`client/src/api/demo.ts`](client/src/api/demo.ts) and is
+> opt-in (`VITE_DEMO`). The real implementation is the **Express + Prisma + PostgreSQL** API in
+> [`server/`](server/) — run it with Docker (see [Getting started](#getting-started)) or deploy
+> the container (`Dockerfile` + `render.yaml`).
 
 ---
 

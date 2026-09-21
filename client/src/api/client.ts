@@ -1,3 +1,5 @@
+import * as demo from "./demo";
+
 // In-memory access token; the refresh token lives in an httpOnly cookie the
 // browser sends automatically. On a 401 we transparently refresh once and retry.
 let accessToken: string | null = null;
@@ -6,6 +8,10 @@ export const setAccessToken = (t: string | null) => {
   accessToken = t;
 };
 export const getAccessToken = () => accessToken;
+
+// Demo mode swaps every network call for an in-memory mock backend (see demo.ts)
+// so the app runs as a static, server-less live demo. Enabled with VITE_DEMO=1.
+export const IS_DEMO = import.meta.env.VITE_DEMO === "1";
 
 export class ApiError extends Error {
   constructor(
@@ -31,6 +37,12 @@ function request(path: string, opts: ApiOptions): Promise<Response> {
 
 let refreshing: Promise<boolean> | null = null;
 export function refreshSession(): Promise<boolean> {
+  if (IS_DEMO) {
+    return demo.refresh().then((ok) => {
+      accessToken = ok ? "demo-token" : null;
+      return ok;
+    });
+  }
   if (!refreshing) {
     refreshing = fetch("/api/auth/refresh", { method: "POST", credentials: "include" })
       .then(async (r) => {
@@ -49,6 +61,7 @@ export function refreshSession(): Promise<boolean> {
 
 /** Fetch a binary response (e.g. a PDF) with auth + one transparent refresh. */
 export async function fetchBlob(path: string): Promise<Blob> {
+  if (IS_DEMO) return demo.blob(path);
   const build = () => {
     const h = new Headers();
     if (accessToken) h.set("Authorization", `Bearer ${accessToken}`);
@@ -61,6 +74,7 @@ export async function fetchBlob(path: string): Promise<Blob> {
 }
 
 export async function api<T = unknown>(path: string, opts: ApiOptions = {}): Promise<T> {
+  if (IS_DEMO) return demo.handle<T>(path, opts);
   let res = await request(path, opts);
   if (res.status === 401 && opts.auth !== false) {
     const ok = await refreshSession();
