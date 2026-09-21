@@ -38,7 +38,8 @@ medical records, prescriptions and PDF export:
 > The demo's mock backend lives in [`client/src/api/demo.ts`](client/src/api/demo.ts) and is
 > opt-in (`VITE_DEMO`). The real implementation is the **Express + Prisma + PostgreSQL** API in
 > [`server/`](server/) — run it with Docker (see [Getting started](#getting-started)) or deploy
-> the container (`Dockerfile` + `render.yaml`).
+> the container to any Docker host: Render (`render.yaml`) or a free
+> **[Hugging Face Space](docs/DEPLOY_HF.md)**.
 
 ---
 
